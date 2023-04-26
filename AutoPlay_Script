@@ -1,0 +1,50 @@
+"""
+This script was created with the intent of getting around a websites flow control. As I was going through a training courses videos, I found that the 
+website was designed to make the user press start on each video instead of automatically continuing. This was very frustrating which prompted me to 
+build this script to reduce my interaction with the site while increasing my speed through the content using Selenium Webdriver.
+"""
+import time
+from selenium import webdriver
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.by import By
+from datetime import datetime
+
+#A place keeper to quit the automation after a stopping time. 
+quitHour = input('What hour do you want to stop watching these videos?  (0-24)')
+
+#Login action for script
+driver = webdriver.Chrome()
+driver.get('Link to site login page')
+driver.find_element(By.CSS_SELECTOR, '#email').send_keys('email@gmail.com')
+driver.find_element(By.CSS_SELECTOR, '#password').send_keys('Password')
+driver.find_element(By.CSS_SELECTOR, '#login-button').click()
+
+#Button press for next video after inital login
+driver.implicitly_wait(20)
+nextVideo = driver.find_element(By.XPATH, 'Place Chrome button Xpath link here').click()
+
+#Button press to start video. An implicit wait was added to ensure the button has time to load before the script attepts to find and press the button.
+driver.implicitly_wait(10)
+#The button did not have a clean Chrome Xpath so the button class name was used instead.
+driver.find_element(By.CLASS_NAME, 'Place Chrome Start button Xpath here').click()
+
+#Loop through videos until condition met
+
+active = True
+
+while active:
+#Try catch used as flow control to search for the play button. If not found else condition triggers. 
+    try: 
+        driver.find_element(By.CLASS_NAME, 'Chrome Class_NAME path for play button goes here').click()
+#Except function used to quit app if variable quitHour is same as current hour.        
+    except:
+        now = datetime.now()
+        current_time = now.strftime("%H")
+        if current_time == quitHour:
+            active = False
+            driver.quit()
+        else:
+            time.sleep(90)
+            
+    
+        
